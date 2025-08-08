@@ -1,83 +1,107 @@
-import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export default function Home() {
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-center font-mono text-sm/6 sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{' '}
-            <code className="rounded bg-black/[.05] px-1 py-0.5 font-mono font-semibold dark:bg-white/[.06]">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent px-4 text-sm font-medium transition-colors hover:bg-[#383838] sm:h-12 sm:w-auto sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="flex h-10 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:w-auto sm:px-5 sm:text-base md:w-[158px] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+      <div className="mx-auto max-w-4xl">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">
+            Vibe Studio
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            A modern UI builder that transforms your visual designs into clean, 
+            production-ready React components through JSON schemas.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>🎨</span>
+                Visual Editor
+              </CardTitle>
+              <CardDescription>
+                Drag and drop components to build your UI visually
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Badge variant="secondary">Coming Soon</Badge>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>📝</span>
+                JSON Schema
+              </CardTitle>
+              <CardDescription>
+                Structured data representation for UI components and logic
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Badge variant="default">Active</Badge>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>⚡</span>
+                Live Preview
+              </CardTitle>
+              <CardDescription>
+                Real-time rendering of your UI from JSON schemas
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Badge variant="default">Active</Badge>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            Get Started
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg">
+              <Link href="/preview">
+                Try Live Preview
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" disabled>
+              Open Editor
+              <Badge variant="secondary" className="ml-2">Soon</Badge>
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-16 text-center">
+          <Card className="bg-gray-50 border-gray-200">
+            <CardHeader>
+              <CardTitle>Architecture</CardTitle>
+              <CardDescription>
+                Built with modern technologies and best practices
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Badge variant="outline">Next.js 15</Badge>
+                <Badge variant="outline">TypeScript</Badge>
+                <Badge variant="outline">Tailwind CSS</Badge>
+                <Badge variant="outline">Zod Validation</Badge>
+                <Badge variant="outline">shadcn/ui</Badge>
+                <Badge variant="outline">React 18</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
