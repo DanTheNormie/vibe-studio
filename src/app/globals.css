@@ -112,6 +112,45 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* VS Code-like dark theme overrides for preview pages */
+.vscode-dark {
+  /* Core surfaces */
+  --background: #181818;
+  --foreground: #d8d8d8;
+  --card: #282828;
+  --card-foreground: #d8d8d8;
+  --popover: #282828;
+  --popover-foreground: #d8d8d8;
+
+  /* Accents and actions */
+  --primary: #7cafc2;
+  --primary-foreground: #f8f8f8;
+  --secondary: #383838;
+  --secondary-foreground: #d8d8d8;
+  --accent: #383838;
+  --accent-foreground: #d8d8d8;
+  --destructive: #ab4642;
+
+  /* Text tones */
+  --muted: #282828;
+  --muted-foreground: #b8b8b8;
+
+  /* Controls and borders */
+  --border: #383838;
+  --input: #282828;
+  --ring: #585858;
+
+  /* Sidebar (editor panel) */
+  --sidebar: #282828;
+  --sidebar-foreground: #d8d8d8;
+  --sidebar-primary: #7cafc2;
+  --sidebar-primary-foreground: #f8f8f8;
+  --sidebar-accent: #383838;
+  --sidebar-accent-foreground: #d8d8d8;
+  --sidebar-border: #383838;
+  --sidebar-ring: #585858;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

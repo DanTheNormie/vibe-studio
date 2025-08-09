@@ -36,17 +36,23 @@ interface PreviewPanelProps {
 }
 
 function PreviewPanel({ width, height, scale, onResize, onScaleChange }: PreviewPanelProps) {
-  const { project, selectedPageId, setSelectedPageId } = useProject();
+  const { project, selectedPageId, setSelectedPageId, setViewportWidth } = useProject();
   const [isResizing, setIsResizing] = useState(false);
   
   const pages = useMemo(() => project ? Object.values(project.pages.byId) : [], [project]);
+
+  // Drive breakpoint logic from the preview artboard width (unscaled)
+  React.useEffect(() => {
+    setViewportWidth(width);
+    return () => setViewportWidth(undefined);
+  }, [setViewportWidth, width]);
   
   if (!project || !selectedPageId) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-900 text-gray-400 min-h-full">
+      <div className="flex-1 flex items-center justify-center bg-background text-muted-foreground min-h-full">
         <div className="text-center">
           <Code2 className="mx-auto h-16 w-16 mb-4 opacity-50" />
-          <h3 className="text-lg font-medium mb-2 text-gray-300">No Project Loaded</h3>
+          <h3 className="text-lg font-medium mb-2 text-foreground">No Project Loaded</h3>
           <p>Upload a JSON file or paste JSON content to see the preview</p>
         </div>
       </div>
@@ -57,12 +63,12 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
   const scaledHeight = Math.round(height * scale);
 
   return (
-    <div className={`flex-1 flex flex-col bg-gray-900 min-h-0 ${isResizing ? 'select-none' : ''}`}>
+    <div className={`flex-1 flex flex-col bg-background min-h-0 ${isResizing ? 'select-none' : ''}`}>
       {/* Controls Bar */}
-      <div className="flex justify-center items-center py-3 px-4 bg-gray-800 border-b border-gray-700 text-sm">
+      <div className="flex justify-center items-center py-3 px-4 bg-secondary border-b border-border text-sm">
         <div className="flex items-center gap-6">
           {/* Resolution Display */}
-          <Badge variant="outline" className="bg-gray-700 border-gray-600 text-gray-300">
+          <Badge variant="outline" className="bg-secondary border-border text-foreground">
             {width} × {height}
           </Badge>
           
@@ -73,7 +79,7 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
               size="sm"
               onClick={() => onScaleChange(Math.max(0.25, scale - 0.25))}
               disabled={scale <= 0.25}
-              className="h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border rounded"
             >
               <ZoomOut className="h-4 w-4" />
             </Button>
@@ -85,7 +91,7 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
               size="sm"
               onClick={() => onScaleChange(Math.min(2, scale + 0.25))}
               disabled={scale >= 2}
-              className="h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border rounded"
             >
               <ZoomIn className="h-4 w-4" />
             </Button>
@@ -94,7 +100,7 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
               size="sm"
               onClick={() => onScaleChange(1)}
               disabled={scale === 1}
-              className="h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-gray-700"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border rounded"
             >
               <RotateCw className="h-4 w-4" />
             </Button>
@@ -102,14 +108,14 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
 
           {/* Page Selector */}
           <div className="flex items-center gap-2">
-            <Label htmlFor="page-select" className="text-xs text-gray-400">Page:</Label>
+            <Label htmlFor="page-select" className="text-xs text-muted-foreground">Page:</Label>
             <Select value={selectedPageId} onValueChange={setSelectedPageId}>
-              <SelectTrigger id="page-select" className="w-32 h-8 bg-gray-700 border-gray-600 text-gray-300">
+              <SelectTrigger id="page-select" className="w-32 h-8 bg-secondary border-border text-foreground">
                 <SelectValue placeholder="Select page" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-600">
+              <SelectContent className="bg-secondary border-border">
                 {pages.map(p => (
-                  <SelectItem key={p.id} value={p.id} className="text-gray-300 focus:bg-gray-700">{p.name}</SelectItem>
+                  <SelectItem key={p.id} value={p.id} className="text-foreground focus:bg-secondary">{p.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -118,9 +124,9 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
       </div>
       
       {/* Preview Content with Resize Handles */}
-      <div className="flex-1 flex justify-center items-start p-8 overflow-auto bg-gray-900">
+      <div className="flex-1 flex justify-center items-start p-8 overflow-auto bg-background">
         <div 
-          className="bg-white shadow-2xl relative border border-gray-600"
+          className="bg-white shadow-2xl relative border border-border"
           style={{ 
             width: `${scaledWidth}px`, 
             height: `${scaledHeight}px`,
@@ -130,7 +136,7 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
         >
           {/* Horizontal Resize Handle */}
           <div 
-            className="absolute bg-blue-500 cursor-ew-resize opacity-30 hover:opacity-100 transition-opacity z-20"
+            className="absolute bg-primary cursor-ew-resize opacity-30 hover:opacity-100 transition-opacity z-20"
             style={{
               right: '0',
               top: '0',
@@ -164,7 +170,7 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
           
           {/* Vertical Resize Handle */}
           <div 
-            className="absolute bg-blue-500 cursor-ns-resize opacity-30 hover:opacity-100 transition-opacity z-20"
+            className="absolute bg-primary cursor-ns-resize opacity-30 hover:opacity-100 transition-opacity z-20"
             style={{
               bottom: '0',
               left: '0',
@@ -198,7 +204,7 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
           
           {/* Corner Resize Handle */}
           <div 
-            className="absolute bg-blue-500 cursor-nw-resize opacity-50 hover:opacity-100 transition-opacity z-20"
+            className="absolute bg-primary cursor-nw-resize opacity-50 hover:opacity-100 transition-opacity z-20"
             style={{
               bottom: '0',
               right: '0',
@@ -289,7 +295,7 @@ function JsonEditorModal({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="flex flex-col bg-gray-800 border-gray-600 text-gray-100 p-0"
+        className="vscode-dark dark flex flex-col bg-popover border border-border text-foreground p-0"
         style={{ 
           width: '90vw', 
           height: '90vh', 
@@ -297,13 +303,13 @@ function JsonEditorModal({
           maxHeight: '90vh'
         }}
       >
-        <DialogHeader className="p-6 pb-4 border-b border-gray-600">
-          <DialogTitle className="text-gray-100">JSON Editor</DialogTitle>
+        <DialogHeader className="p-6 pb-4 border-b border-border bg-popover">
+          <DialogTitle className="text-foreground">JSON Editor</DialogTitle>
         </DialogHeader>
         
-        <div className="flex-1 flex flex-col gap-4 min-h-0 p-6">
+        <div className="flex-1 flex flex-col gap-4 min-h-0 p-6 bg-popover text-foreground">
           {/* Editor */}
-          <div className="flex-1 border border-gray-600 rounded-md overflow-hidden">
+          <div className="flex-1 border border-border rounded-md overflow-hidden bg-input">
             <Editor
               height="100%"
               defaultLanguage="json"
@@ -332,7 +338,7 @@ function JsonEditorModal({
                 variant="outline" 
                 size="sm" 
                 disabled={!value.trim()}
-                className="flex-1 bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+                className="flex-1 bg-secondary border border-border text-foreground hover:bg-secondary"
               >
                 <Code2 className="h-4 w-4 mr-1" />
                 Format
@@ -342,7 +348,7 @@ function JsonEditorModal({
                 variant="outline" 
                 size="sm" 
                 disabled={!value.trim()}
-                className="flex-1 bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+                className="flex-1 bg-secondary border border-border text-foreground hover:bg-secondary"
               >
                 <Download className="h-4 w-4 mr-1" />
                 Download
@@ -383,11 +389,11 @@ function JsonEditorModal({
           
           {/* Validation Issues */}
           {issues.length > 0 && (
-            <Card className="border-red-800 bg-red-900/20">
+            <Card className="border-destructive bg-destructive/10">
               <CardContent className="pt-4">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-red-300 text-sm whitespace-pre-wrap font-mono">
+                  <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                  <div className="text-destructive text-sm whitespace-pre-wrap font-mono">
                     {issues.join("\n")}
                   </div>
                 </div>
@@ -509,28 +515,28 @@ function ProjectEditor() {
   }, [setProject, setSelectedPageId]);
 
   return (
-    <div className="h-full flex flex-col bg-gray-800 text-gray-100">
-      <div className="p-6 pb-4 bg-gray-800 border-b border-gray-700">
-        <div className="flex items-center gap-2 text-lg text-gray-100">
+    <div className="h-full flex flex-col bg-sidebar text-sidebar-foreground">
+      <div className="p-6 pb-4 bg-sidebar border-b border-sidebar-border">
+        <div className="flex items-center gap-2 text-lg text-sidebar-foreground">
           <Settings className="h-5 w-5" />
           Project Editor
-          {project && <Badge variant="secondary" className="ml-auto bg-blue-600 text-white">Loaded</Badge>}
+          {project && <Badge variant="secondary" className="ml-auto bg-primary text-primary-foreground">Loaded</Badge>}
         </div>
       </div>
       
-      <div className="flex-1 flex flex-col gap-4 overflow-hidden bg-gray-800 text-gray-100 p-6">
+      <div className="flex-1 flex flex-col gap-4 overflow-hidden bg-sidebar text-sidebar-foreground p-6">
         {/* File Upload */}
         <div className="space-y-2">
-          <Label htmlFor="file-upload" className="text-sm font-medium text-gray-300">Upload JSON File</Label>
+          <Label htmlFor="file-upload" className="text-sm font-medium text-muted-foreground">Upload JSON File</Label>
           <div className="flex gap-2">
             <Input 
               id="file-upload"
               type="file" 
               accept="application/json" 
               onChange={e => { const f = e.target.files?.[0]; if (f) onFile(f); }}
-              className="flex-1 bg-gray-700 border-gray-600 text-gray-300"
+              className="flex-1 bg-input border-border text-foreground"
             />
-            <Button variant="outline" size="sm" onClick={onReset} title="Reset" className="bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600">
+            <Button variant="outline" size="sm" onClick={onReset} title="Reset" className="bg-secondary border-border text-foreground hover:bg-secondary">
               <RotateCcw className="h-4 w-4" />
             </Button>
           </div>
@@ -539,12 +545,12 @@ function ProjectEditor() {
         {/* JSON Editor */}
         <div className="flex-1 flex flex-col space-y-2 min-h-0">
           <div className="flex items-center justify-between">
-            <Label className="text-sm font-medium text-gray-300">JSON Content</Label>
-            <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(true)} className="text-gray-400 hover:text-gray-200 hover:bg-gray-700">
+            <Label className="text-sm font-medium text-muted-foreground">JSON Content</Label>
+            <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(true)} className="text-muted-foreground hover:text-foreground hover:bg-secondary border border-border rounded">
               <Maximize2 className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex-1 border border-gray-600 rounded-md overflow-hidden">
+          <div className="flex-1 border border-border rounded-md overflow-hidden">
             <Editor
               height="100%"
               defaultLanguage="json"
@@ -575,7 +581,7 @@ function ProjectEditor() {
               variant="outline" 
               size="sm" 
               disabled={!raw.trim()}
-              className="flex-1 bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+              className="flex-1 bg-secondary border border-border text-foreground hover:bg-secondary"
             >
               <Code2 className="h-4 w-4 mr-1" />
               Format
@@ -585,7 +591,7 @@ function ProjectEditor() {
               variant="outline" 
               size="sm" 
               disabled={!raw.trim()}
-              className="flex-1 bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
+              className="flex-1 bg-secondary border border-border text-foreground hover:bg-secondary"
             >
               <Download className="h-4 w-4 mr-1" />
               Download
@@ -673,19 +679,19 @@ function PreviewInner() {
   }, []);
 
   return (
-    <div className="h-screen flex bg-gray-900">
+    <div className="h-screen flex bg-background">
       <PanelGroup direction="horizontal">
         {/* Collapsible Resizable Panel */}
         {isPanelOpen && (
           <>
             <Panel defaultSize={25} minSize={15} maxSize={50}>
-              <div className="h-full bg-gray-800 border-r border-gray-700">
+              <div className="h-full bg-sidebar border-r border-sidebar-border">
                 <ProjectEditor />
           </div>
             </Panel>
             
             {/* Resize Handle */}
-            <PanelResizeHandle className="w-1 bg-gray-700 hover:bg-gray-600 transition-colors" />
+            <PanelResizeHandle className="w-1 bg-border hover:bg-ring transition-colors" />
           </>
         )}
         
@@ -696,7 +702,7 @@ function PreviewInner() {
             <Button
               variant="ghost"
               size="sm"
-              className="absolute top-4 left-4 z-50 bg-gray-800/90 backdrop-blur-sm shadow-lg hover:bg-gray-700 text-gray-300 border border-gray-600"
+              className="absolute top-4 left-4 z-50 bg-secondary/90 backdrop-blur-sm shadow-lg hover:bg-secondary text-foreground border border-border"
               onClick={() => setIsPanelOpen(!isPanelOpen)}
             >
               {isPanelOpen ? '⮜' : '⮞'}
@@ -718,7 +724,7 @@ function PreviewInner() {
 
 export default function Page() {
   return (
-    <div className="dark">
+    <div className="dark vscode-dark">
     <ProjectProvider>
       <PreviewInner />
     </ProjectProvider>
