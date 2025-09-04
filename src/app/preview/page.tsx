@@ -36,7 +36,7 @@ interface PreviewPanelProps {
 }
 
 function PreviewPanel({ width, height, scale, onResize, onScaleChange }: PreviewPanelProps) {
-  const { project, selectedPageId, setSelectedPageId, setViewportWidth } = useProject();
+  const { project, selectedPageId, setSelectedPageId, setViewportWidth, setPageParams } = useProject();
   const [isResizing, setIsResizing] = useState(false);
   
   const pages = useMemo(() => project ? Object.values(project.pages.byId) : [], [project]);
@@ -46,6 +46,23 @@ function PreviewPanel({ width, height, scale, onResize, onScaleChange }: Preview
     setViewportWidth(width);
     return () => setViewportWidth(undefined);
   }, [setViewportWidth, width]);
+
+  // Populate page params from URL search params
+  React.useEffect(() => {
+    const updateFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const out: Record<string, string> = {};
+      params.forEach((v, k) => { out[k] = v; });
+      setPageParams(out);
+    };
+    updateFromUrl();
+    window.addEventListener('popstate', updateFromUrl);
+    window.addEventListener('hashchange', updateFromUrl);
+    return () => {
+      window.removeEventListener('popstate', updateFromUrl);
+      window.removeEventListener('hashchange', updateFromUrl);
+    };
+  }, [setPageParams, project, selectedPageId]);
   
   if (!project || !selectedPageId) {
     return (

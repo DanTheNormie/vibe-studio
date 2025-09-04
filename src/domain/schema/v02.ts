@@ -73,6 +73,7 @@ export type Instance = z.infer<typeof zInstance>;
 /** Props and events */
 export const zAction = z.discriminatedUnion("type", [
   z.object({ type: z.literal("setDataSource"), id: z.string(), value: z.union([zExpression, zRefExpr]) }),
+  z.object({ type: z.literal("updateDataSource"), id: z.string(), op: z.enum(["increment", "decrement"]), amount: z.number().optional() }),
   z.object({ type: z.literal("callResource"), id: z.string(), payload: z.union([zExpression, zRefExpr]).optional(), assignTo: z.string().optional() }),
   z.object({ type: z.literal("navigate"), to: zValueExpr }),
   z.object({ type: z.literal("noop") }),

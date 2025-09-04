@@ -11,6 +11,8 @@ export type RuntimeState = {
   setViewportWidth: (w?: number) => void;
   dataSources: Record<string, unknown>;
   setDataSource: (id: string, value: unknown) => void;
+  pageParams: Record<string, unknown>;
+  setPageParams: (params: Record<string, unknown>) => void;
 };
 
 const Ctx = createContext<RuntimeState | undefined>(undefined);
@@ -20,6 +22,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [selectedPageId, setSelectedPageId] = useState<string | undefined>();
   const [viewportWidth, setViewportWidth] = useState<number | undefined>(undefined);
   const [dataSources, setDataSources] = useState<Record<string, unknown>>({});
+  const [pageParams, setPageParams] = useState<Record<string, unknown>>({});
 
   const setDataSource = (id: string, value: unknown) => setDataSources(prev => ({ ...prev, [id]: value }));
 
@@ -32,7 +35,9 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     setViewportWidth,
     dataSources,
     setDataSource,
-  }), [project, selectedPageId, viewportWidth, dataSources]);
+    pageParams,
+    setPageParams,
+  }), [project, selectedPageId, viewportWidth, dataSources, pageParams]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
