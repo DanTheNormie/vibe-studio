@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import SliderInput from "../sliderInput";
+import SliderInput from "../number-input-slider";
 
 const meta:Meta<typeof SliderInput> = {
     title:"Slider Input",
