@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
+import Pillbar from "./pillbar";
 
 interface Position {
     x: number;
@@ -105,6 +106,8 @@ const Canvas = () => {
                     transformOrigin: '0 0'
                 }}
             />
+
+            <Pillbar resolution={targetResolution} setResolution={setTargetResolution} scale={finalScale} setFinalScale={setFinalScale}/>
 
             <div className="absolute top-4 right-4 bg-black/20 p-2 rounded text-sm font-mono">
                 <p>X: {Math.round(elementPosition.x)}</p>
